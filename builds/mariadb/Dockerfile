@@ -1,5 +1,5 @@
-FROM dtr.dts.utah.gov/mluce/centos:latest 
-MAINTAINER Luce <mluce@utah.gov>
+FROM centos:latest 
+MAINTAINER Luce <junk@598north.com>
 COPY MariaDB.repo /etc/yum.repos.d/
 RUN yum -y update && \
     yum -y install MariaDB-server MariaDB-client && \

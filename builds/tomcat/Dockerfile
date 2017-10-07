@@ -1,5 +1,5 @@
-FROM dtr.dts.utah.gov/mluce/centos:latest 
-MAINTAINER Luce <mluce@utah.gov>
+FROM /centos:latest 
+MAINTAINER Luce <junk@598north.com>
 RUN yum -y update && \
 yum install wget -y && \
 wget --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u144-b01/090f390dda5b47b9b721c7dfaa008135/jdk-8u144-linux-x64.rpm -O /tmp/jdk.rpm && \
