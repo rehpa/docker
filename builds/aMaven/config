@@ -1,0 +1,3 @@
+# GitLab server
+Host git.dts.utah.gov
+IdentityFile /root/.ssh/id_maven_rsa

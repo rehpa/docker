@@ -1,0 +1,60 @@
+version: '3.2'
+
+services:
+   tomcat:
+     image: dtr.dts.utah.gov/mluce/tomcat:latest
+     labels:
+       - elcid=HL1231
+       - devName=Matt Luce
+       - devPhone=(801) 538-6058
+       - devMail=mluce@utah.gov
+       - campus=D
+       - com.docker.ucp.access.label=/Campus D/DABC/AT
+       - com.docker.ucp.collection=/Campus D/DABC/AT
+     volumes:
+       - type: volume
+         source: nfs-tomcat
+         target: /nfsmount
+         volume:
+           nocopy: true
+     ports:
+       - target: 8080
+         published: 30809
+         protocol: tcp
+         mode: ingress
+     networks:
+       app-internal:
+         aliases:
+           - appserver
+     deploy:
+        replicas: 2
+        restart_policy:
+          condition: any
+          delay: 5s
+          max_attempts: 3
+          window: 120s
+     environment:
+        TEST: me
+     secrets:
+       - source: CampusD-Test
+         target: test
+       - source: CampusD_DTS_Sample_DB-Password
+         target: db_password
+#     logging:
+#       driver: syslog
+#       options:
+#         syslog-address: "tcp://eslindex8.utah.utad.state.ut.us:12203"		 
+volumes:
+   nfs-tomcat:
+      driver: local
+      driver_opts:
+        type: nfs
+        o: addr=168.180.133.124,rw
+        device: ":/docker/campusD/Tomcat"
+networks:
+       app-internal:
+secrets:
+       CampusD-Test:
+         external: true
+       CampusD_DTS_Sample_DB-Password:
+         external: true

@@ -1,0 +1,56 @@
+version: '3.2'
+
+services:
+   db:
+     image: dtr.dts.utah.gov/mluce/mariadb:latest
+     labels:
+       - elcid=HL1231
+       - devName=Matt Luce
+       - devPhone=(801) 538-6058
+       - devMail=mluce@utah.gov
+       - campus=D
+       - lifecycle=AT
+       - stackyaml=https://git.dts.utah.gov/000193802/docker/tree/master/compose_files/CampusD-DTS-Hosting-AT-DB.yml
+       - com.docker.ucp.access.label=/Campus D/DTS/AT
+       - com.docker.ucp.collection=/Campus D/DTS/AT
+     volumes:
+#       - "/u00/campusD/SystemStats-DB:/nfsmount"
+       - type: volume
+         source: nfs-DB
+         target: /nfsmount
+         volume:
+           nocopy: true
+     ports:
+       - target: 3306
+         published: 30306
+         protocol: tcp
+         mode: ingress
+     networks:
+       db-internal:
+         aliases:
+           - dbserver
+     deploy:
+        replicas: 1
+        resources:
+          limits:
+            cpus: '1.00'
+            memory: 1G
+        restart_policy:
+          condition: any
+          delay: 60s
+          window: 120s
+     environment:
+        lifecycle: AT
+        REPOURL: https://ci.dts.utah.gov/artifactory
+        GROUP: campusD/Tomcat
+     entrypoint: ["/usr/bin/sleep","2d"]
+volumes:
+   nfs-DB:
+      driver: local
+      driver_opts:
+        type: nfs
+        o: addr=168.180.133.124,rw,noatime,vers=4.1,rsize=262144,wsize=262144,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys
+        device: ":/docker/campusD/SystemStats-DB"
+networks:
+       db-internal:
+
